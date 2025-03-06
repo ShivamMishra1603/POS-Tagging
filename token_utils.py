@@ -1,5 +1,6 @@
 import re
 import numpy as np
+import matplotlib.pyplot as plt
 
 def wordTokenizer(text):
     pattern = r'''
@@ -87,3 +88,30 @@ def getLexicalFeatureSet(tokens_data, wordToIndex, posToIndex):
             y.append(pos_index)
     
     return np.array(X), np.array(y)
+
+
+def plot_training_and_dev_curves(train_losses, train_accuracies, dev_losses, dev_accuracies):
+    epochs = range(1, len(train_losses) + 1)
+    
+    plt.figure(figsize=(12, 6))
+    
+    plt.subplot(1, 2, 1)
+    plt.plot(epochs, train_losses, label='Training Loss', color='blue')
+    plt.plot(epochs, dev_losses, label='Dev Loss', color='orange')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.title('Training and Dev Loss')
+    plt.legend()
+
+    plt.subplot(1, 2, 2)
+    plt.plot(epochs, train_accuracies, label='Training Accuracy', color='blue')
+    plt.plot(epochs, dev_accuracies, label='Dev Accuracy', color='orange')
+    plt.xlabel('Epochs')
+    plt.ylabel('Accuracy')
+    plt.title('Training and Dev Accuracy')
+    plt.legend()
+
+    plt.tight_layout()
+    plt.ion()
+    plt.pause(2)
+    plt.show()

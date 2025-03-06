@@ -4,6 +4,8 @@ from model import trainLogReg
 from grid_search import gridSearch
 from predict import predict_POS_tags
 from sklearn.model_selection import train_test_split
+from token_utils import plot_training_and_dev_curves
+
 
 if __name__ == "__main__":
     current_directory = os.path.dirname(__file__)
@@ -32,9 +34,18 @@ if __name__ == "__main__":
     l2_penalty = 0.01
     model, train_losses, train_accuracies, dev_losses, dev_accuracies = trainLogReg((X_train, y_train), (X_dev, y_dev), learning_rate, l2_penalty)
 
+    plot_training_and_dev_curves(train_losses, train_accuracies, dev_losses, dev_accuracies)
+
+
     learning_rates = [0.1, 1, 10]
     l2_penalties = [1e-5, 1e-3, 1e-1]
-    grid_accuracy_table = gridSearch((X_train, y_train), (X_dev, y_dev), learning_rates, l2_penalties)
+    model_accuracies, best_lr, best_l2_penalty = gridSearch((X_train, y_train), (X_dev, y_dev), learning_rates, l2_penalties)
+
+    model, train_losses, train_accuracies, dev_losses, dev_accuracies = trainLogReg(
+            (X_train, y_train), (X_dev, y_dev), best_lr, best_l2_penalty
+        )
+
+    plot_training_and_dev_curves(train_losses, train_accuracies, dev_losses, dev_accuracies)
 
     sample_sentences = ['The horse raced past the barn fell.', 'For 3 years, we attended S.B.U. in the CS program.', 'Did you hear Sam tell me to "chill out" yesterday? #rude']
     for sentence in sample_sentences:
